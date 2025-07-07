@@ -1,20 +1,17 @@
-services:       # Defines the containers to run
-  dev:          # Service name (development)
-    build:
-      context: .       # Build from current directory
-      target: dev      # Use the "dev" stage from Dockerfile
-    ports:
-      - "5173:5173"    # Maps host port 5173 → container port 5173 (Vite dev server)
-    volumes:
-      - ./:/app        # Sync local files with container (live reload)
-      - /app/node_modules  # Preserve node_modules (avails host conflicts)
-    # environment:
-    #   - CHOKIDAR_USEPOLLING=true
-    #   - WATCHPACK_POLLING=true
-
-  prod:         # Service name (production)
+services:
+  dev:
     build:
       context: .
-      target: prod     # Use the "prod" stage from Dockerfile
+      target: dev
     ports:
-      - "80:80"        # Maps host port 80 → container port 80 (NGINX)
+      - "5173:5173"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+
+  prod:
+    build:
+      context: .
+      target: prod
+    ports:
+      - "80:80" # Maps host port 80 → container port 80 (NGINX)
