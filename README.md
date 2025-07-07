@@ -22,6 +22,7 @@ pnpm run docker-dev      # Start development environment in Docker
 pnpm run docker-build    # Build the app in Docker
 pnpm run prod            # Start production server in Docker
 pnpm run reset           # Reset Docker containers
+pnpm run format          # Formats the project using prettier
 ```
 
 ---
