@@ -7,7 +7,6 @@ echo -e "${YELLOW} Starting development server...${NC}"
 # Check if dev container is already running
 if docker ps --filter "name=$DEV_CONTAINER" --format '{{.Names}}' | grep -q "^$DEV_CONTAINER$"; then
   echo -e "${GREEN} Dev server already running at http://localhost:$DEV_PORT${NC}"
-  echo -e "${YELLOW}Attaching to logs for $DEV_CONTAINER... (Ctrl+C to stop and remove)${NC}"
   trap 'echo -e "\n${YELLOW}Stopping and removing $DEV_CONTAINER...${NC}"; docker stop $DEV_CONTAINER >/dev/null; docker rm $DEV_CONTAINER >/dev/null; exit 0' INT
   docker logs -f $DEV_CONTAINER
   exit 0
@@ -35,5 +34,4 @@ docker run -d \
   $DEV_IMAGE || handle_error "Failed to start dev server"
 
 echo -e "${GREEN} Dev server running at http://localhost:$DEV_PORT${NC}"
-echo -e "${YELLOW}Attaching to logs for $DEV_CONTAINER...${NC}"
 docker logs -f $DEV_CONTAINER
