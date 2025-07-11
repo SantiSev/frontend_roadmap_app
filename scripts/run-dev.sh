@@ -1,22 +1,39 @@
 #!/bin/bash
 source ./scripts/common.sh
 
-echo -e "${YELLOW}⚙️ Starting development server...${NC}"
+echo -e "${YELLOW} Starting development server...${NC}"
 
-# Check if container is already running
-if [ "$(docker ps -q -f name=${DEV_SERVICE})" ]; then
-  echo -e "${GREEN}✅ Dev server already running at http://localhost:$DEV_PORT${NC}"
+
+# Check if dev container is already running
+if docker ps --filter "name=$DEV_CONTAINER" --format '{{.Names}}' | grep -q "^$DEV_CONTAINER$"; then
+  echo -e "${GREEN} Dev server already running at http://localhost:$DEV_PORT${NC}"
+  echo -e "${YELLOW}Attaching to logs for $DEV_CONTAINER... (Ctrl+C to stop and remove)${NC}"
+  trap 'echo -e "\n${YELLOW}Stopping and removing $DEV_CONTAINER...${NC}"; docker stop $DEV_CONTAINER >/dev/null; docker rm $DEV_CONTAINER >/dev/null; exit 0' INT
+  docker logs -f $DEV_CONTAINER
   exit 0
 fi
 
-# Only build if the image does not exist or source files changed
-if [ -z "$(docker images -q ${DEV_IMAGE})" ]; then
-  echo -e "${YELLOW}📦 Building image ${DEV_IMAGE}...${NC}"
-  docker compose build $DEV_SERVICE || handle_error "Build failed"
+# Remove stopped container with the same name if it exists
+if docker ps -a --filter "name=$DEV_CONTAINER" --format '{{.Names}}' | grep -q "^$DEV_CONTAINER$"; then
+  echo -e "${YELLOW} Removing old stopped container $DEV_CONTAINER...${NC}"
+  docker rm $DEV_CONTAINER || handle_error "Failed to remove old dev container"
 fi
 
-# Start the container
-echo -e "${YELLOW}🚀 Launching dev server...${NC}"
-docker compose up $DEV_SERVICE || handle_error "Failed to start dev server"
+# Build dev image if missing
+if ! docker image inspect $DEV_IMAGE >/dev/null 2>&1; then
+  echo -e "${YELLOW} Building dev image...${NC}"
+  docker build -f Dockerfile.dev -t $DEV_IMAGE . || handle_error "Build failed"
+fi
 
-echo -e "${GREEN}✅ Dev server running at http://localhost:$DEV_PORT${NC}"
+# Run container with volume mounting and hot reload support
+echo -e "${YELLOW} Launching dev server...${NC}"
+docker run -d \
+  --name $DEV_CONTAINER \
+  -v $(pwd):/app \
+  -v /app/node_modules \
+  -p $DEV_PORT:$DEV_PORT \
+  $DEV_IMAGE || handle_error "Failed to start dev server"
+
+echo -e "${GREEN} Dev server running at http://localhost:$DEV_PORT${NC}"
+echo -e "${YELLOW}Attaching to logs for $DEV_CONTAINER...${NC}"
+docker logs -f $DEV_CONTAINER

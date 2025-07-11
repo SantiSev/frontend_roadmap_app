@@ -1,7 +1,7 @@
-# ========== Stage 1: Base ==========
-FROM node:18-alpine AS base
+# ---------- Stage 1: Builder ----------
+FROM node:18-alpine AS builder
 
-# <<< Explicitly set PNPM path and ensure it's available
+# Enable pnpm and set working directory
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable && corepack prepare pnpm@latest --activate
@@ -9,22 +9,17 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
 RUN pnpm install --frozen-lockfile
+
+# Copy all necessary files and build
 COPY . .
-
-# ========== Stage 2: Development ==========
-FROM base AS dev
-# <<< Use absolute path to pnpm with shell syntax
-CMD ["/bin/sh", "-c", "pnpm dev"]
-
-# ========== Stage 3: Builder ==========
-FROM base AS builder
-# Copy only necessary files for production build
-COPY vite.config.ts tsconfig.json ./
 RUN pnpm build
 
-# ========== Stage 4: Production ==========
+# ---------- Stage 2: Production ----------
 FROM nginx:alpine AS prod
+
+# Copy built assets
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

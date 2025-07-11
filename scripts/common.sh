@@ -1,8 +1,12 @@
 #!/bin/bash
 
 # Configuration
-CONTAINER_NAME="roadmap_front"
-DEV_SERVICE="dev"
+PROD_IMAGE="roadmap_front"            # Final production image name
+PROD_CONTAINER="roadmap_front"        # Container name for prod (same name is OK)
+
+DEV_IMAGE="roadmap_front-dev"         # Local dev image
+DEV_CONTAINER="roadmap_front-dev"     # Container name for dev
+
 PROD_PORT=80
 DEV_PORT=5173
 
@@ -14,6 +18,6 @@ NC='\033[0m' # No Color
 
 # Error handling
 handle_error() {
-  echo -e "${RED}❌ Error: $1${NC}"
+  echo -e "${RED} Error: $1${NC}"
   exit 1
 }

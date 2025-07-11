@@ -1,10 +1,17 @@
 #!/bin/bash
 source ./scripts/common.sh
 
-echo -e "${YELLOW}Resetting environment...${NC}"
+echo -e "${YELLOW} Resetting environment...${NC}"
 
-docker compose down -v --remove-orphans || echo "No containers to remove"
-docker system prune -af || echo "Prune failed"
-docker rmi -f $CONTAINER_NAME 2>/dev/null || echo "No image to remove"
+docker stop $DEV_CONTAINER 2>/dev/null || echo "No dev container running"
+docker stop $CONTAINER_NAME 2>/dev/null || echo "No prod container running"
 
-echo -e "${GREEN}✅ Environment reset complete${NC}"
+docker rm $DEV_CONTAINER 2>/dev/null
+docker rm $CONTAINER_NAME 2>/dev/null
+
+docker rmi -f $DEV_IMAGE 2>/dev/null || echo "No dev image to remove"
+docker rmi -f $CONTAINER_NAME 2>/dev/null || echo "No prod image to remove"
+
+docker system prune -af || echo "Docker prune failed"
+
+echo -e "${GREEN} Environment reset complete${NC}"

@@ -1,0 +1,17 @@
+# ---------- Stage 1: Base ----------
+FROM node:18-alpine AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+WORKDIR /app
+COPY package.json pnpm-lock.yaml* ./
+RUN pnpm install --frozen-lockfile
+COPY . .
+
+# ---------- Stage 2: Development ----------
+FROM base AS dev
+
+EXPOSE 5173
+CMD [ "pnpm", "dev" ]
