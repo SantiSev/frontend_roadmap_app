@@ -7,7 +7,7 @@ PROD_CONTAINER="roadmap_front"        # Container name for prod (same name is OK
 DEV_IMAGE="roadmap_front-dev"         # Local dev image
 DEV_CONTAINER="roadmap_front-dev"     # Container name for dev
 
-PROD_PORT=80
+PROD_PORT=8080
 DEV_PORT=5173
 
 # Colors
