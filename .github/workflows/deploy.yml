@@ -1,0 +1,48 @@
+name: Deploy to Cloud Run on Release
+
+on:
+  release:
+    types: [published]
+
+env: # From GitHub Secrets and Variables
+  GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+  GCP_SERVICE: ${{ vars.GCP_SERVICE }}
+  GCP_REGION: ${{ vars.GCP_REGION }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ vars.GCP_PROJECT }}
+
+      - name: Set up gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ vars.GCP_PROJECT }}
+
+      - name: Make scripts executable
+        run: |
+          chmod +x DEPLOY.sh
+          chmod +x ./scripts/common.sh
+
+      - name: Run deployment
+        run: ./DEPLOY.sh
+        env:
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+          GCP_SERVICE: ${{ vars.GCP_SERVICE }}
+          GCP_REGION: ${{ vars.GCP_REGION }}
+          
+      - name: Verify deployment
+        run: |
+          echo "Service URL: $(gcloud run services describe $GCP_SERVICE \
+            --platform managed \
+            --region $GCP_REGION \
+            --format 'value(status.url)')"
