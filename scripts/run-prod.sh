@@ -1,28 +1,22 @@
 #!/bin/bash
 source ./scripts/common.sh
 
-echo -e "${YELLOW}⚙️ Starting production container...${NC}"
+echo -e "${YELLOW} Starting production enviorment server with ...${NC}"
 
-# Build prod image if not exists
-if ! docker image inspect $CONTAINER_NAME >/dev/null 2>&1; then
-  echo -e "${YELLOW} Building production image...${NC}"
-  ./scripts/run-build || handle_error "Build failed"
-fi
 
-# Stop and remove existing container
-if docker ps --filter "name=$CONTAINER_NAME" --format '{{.Names}}' | grep -q "^$CONTAINER_NAME$"; then
-  echo -e "${YELLOW} Stopping existing production container...${NC}"
-  docker stop $CONTAINER_NAME >/dev/null
-fi
+echo -e "${YELLOW} Building prod image...${NC}"
+docker build -f Dockerfile -t $PROD_IMAGE . || handle_error "Build failed"
 
-# Run production container
+
+echo -e "${YELLOW} Launching prod server...${NC}"
 docker run -d \
-  --name $CONTAINER_NAME \
-  -p $PROD_PORT:80 \
-  $CONTAINER_NAME && {
-    echo -e "${GREEN} Production container running at http://localhost${NC}"
-    echo -e "${YELLOW}ℹ  To stop: docker stop $CONTAINER_NAME${NC}"
-  } || {
-    echo -e "${RED} Failed to start production container${NC}"
-    exit 1
-  }
+  --name $PROD_CONTAINER \
+  -p 8080:8080 \
+  $PROD_IMAGE || handle_error "Failed to start prod server"
+
+echo -e "${GREEN} Prod server running at http://localhost:8080${NC}"
+
+# Trap Ctrl+C to stop and remove the container
+trap 'echo -e "\n${YELLOW}Stopping and removing $PROD_CONTAINER...${NC}"; docker stop $PROD_CONTAINER >/dev/null; docker rm $PROD_CONTAINER >/dev/null; exit 0' INT
+
+docker logs -f $PROD_CONTAINER
