@@ -11,6 +11,6 @@ echo -e "${RED} WARNING: Make sure to run this script in the root of the project
 gcloud run deploy $GCP_SERVICE \
   --project=$GCP_PROJECT \
   --region=$GCP_REGION \
-  --source .
+  --source . 2>&1 || handle_error "Failed to deploy to Google Cloud Run"
 
 echo -e "${GREEN} Deployment Complete!${NC}"
