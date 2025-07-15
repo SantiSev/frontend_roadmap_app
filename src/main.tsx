@@ -1,10 +1,21 @@
+import "./index.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
-import App from "./App.tsx";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { RouterProvider } from "react-router-dom";
+import router from "./app/router/root";
+import { AuthProvider } from "./app/auth/AuthProvider";
+
+const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string;
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <GoogleOAuthProvider clientId={clientId}>
+      <AuthProvider>
+        {" "}
+        {/* TODO: later replace this with react hooks to not use useAuth() */}
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </GoogleOAuthProvider>
   </StrictMode>,
 );
