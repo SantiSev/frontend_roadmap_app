@@ -15,14 +15,21 @@ interface UserProfile {
 }
 
 import { useNavigate } from "react-router-dom";
+import { useUserStore } from "../../../stores/useUserStore";
 
 export default function GoogleLoginButton() {
   const navigate = useNavigate();
-
+  const setUser = useUserStore((state) => state.setUser);
   const handleSuccess = async (response: GoogleOAuthResponse) => {
     try {
       if (response.credential) {
         const userProfile: UserProfile = jwtDecode(response.credential);
+
+        setUser({
+          id: userProfile.sub,
+          name: userProfile.name,
+          email: userProfile.email,
+        });
 
         console.log("User Profile:", userProfile);
         navigate("/");

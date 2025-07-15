@@ -1,15 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
-import useAuth from "../../auth/useAuth";
+import { useUserStore } from "../../../stores/useUserStore";
 
 export default function PrivateGuard() {
-  {
-    /* TODO: later replace this with react hooks to not use useAuth() */
-  }
-  const { isAuthenticated } = useAuth();
+  const user = useUserStore((state) => state.user);
 
-  return isAuthenticated != null ? (
-    <Outlet />
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  return user != null ? <Outlet /> : <Navigate to="/login" replace />;
 }

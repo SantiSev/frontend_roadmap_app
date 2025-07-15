@@ -18,6 +18,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const token = localStorage.getItem("google_token");
     if (token) {
       try {
+        console.log("Decoding token:", token);
+        
         const decoded: UserProfile = jwtDecode(token);
         setUser(decoded);
       } catch {
