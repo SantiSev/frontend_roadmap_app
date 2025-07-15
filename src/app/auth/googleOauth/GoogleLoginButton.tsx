@@ -38,7 +38,12 @@ export default function GoogleLoginButton() {
 
   return (
     <div className="flex items-center justify-center mt-4">
-      <GoogleLogin onSuccess={handleSuccess} onError={handleError} useOneTap auto_select={true}   />
+      <GoogleLogin
+        onSuccess={handleSuccess}
+        onError={handleError}
+        useOneTap
+        auto_select={true}
+      />
     </div>
   );
 }
