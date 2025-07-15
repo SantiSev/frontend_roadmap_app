@@ -19,7 +19,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     if (token) {
       try {
         console.log("Decoding token:", token);
-        
+
         const decoded: UserProfile = jwtDecode(token);
         setUser(decoded);
       } catch {
