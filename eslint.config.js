@@ -8,7 +8,7 @@ import { globalIgnores } from 'eslint/config';
 export default tseslint.config([
   globalIgnores([
     'dist',
-    'src/components/ui/**' // Add this line to completely ignore the folder
+    'src/components/ui/**'
   ]),
   {
     files: ['**/*.{ts,tsx}'],
