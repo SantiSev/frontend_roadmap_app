@@ -12,10 +12,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={clientId}>
       <AuthProvider>
-        {" "}
         {/* TODO: later replace this with react hooks to not use useAuth() */}
         <RouterProvider router={router} />
       </AuthProvider>
     </GoogleOAuthProvider>
-  </StrictMode>,
+  </StrictMode>
 );

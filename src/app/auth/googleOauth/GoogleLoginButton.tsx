@@ -30,6 +30,7 @@ export default function GoogleLoginButton() {
           name: userProfile.name,
           email: userProfile.email,
         });
+        localStorage.setItem("google_token", response.credential);
 
         console.log("User Profile:", userProfile);
         navigate("/");
