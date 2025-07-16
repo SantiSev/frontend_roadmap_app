@@ -29,6 +29,7 @@ export default function GoogleLoginButton() {
           id: userProfile.sub,
           name: userProfile.name,
           email: userProfile.email,
+          image: userProfile.picture ?? null,
         });
         localStorage.setItem("google_token", response.credential);
 
