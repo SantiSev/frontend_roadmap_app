@@ -4,6 +4,7 @@ import PublicGuard from "./guards/PublicGuard";
 import ErrorPage from "../pages/ErrorPage";
 import SignIn from "../pages/SignIn";
 import HomePage from "../pages/Home";
+import RoadmapPage from "../pages/RoadmapPage";
 
 const router = createBrowserRouter([
   {
@@ -33,7 +34,17 @@ const router = createBrowserRouter([
     ],
   },
   {
-    // Redirect any unmatched routes to the login page
+    path: "/roadmap",
+    element: <PrivateGuard />,
+    children: [
+      {
+        index: true,
+        element: <RoadmapPage />,
+      },
+    ],
+  },
+  {
+    // Redirect any unmatched routes to the error page
     path: "*",
     element: <Navigate to="/error" />,
   },

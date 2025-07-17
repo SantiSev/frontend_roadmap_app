@@ -1,14 +1,26 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useUserStore } from "../../../stores/useUserStore";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 
 export default function PrivateGuard() {
-  {
-    // TODO: Implement a more robust authentication check, this is a placeholder implementation for testing purposes
-    // The backend should ideally provide a way to check if the user is authenticated
-    // and authorized to access the routes.
-    // Also, there should be a way to handle token expiration and refresh.
-  }
-  const user = useUserStore((state) => state.user);
+  const { user, initialized } = useUserStore();
 
-  return user != null ? <Outlet /> : <Navigate to="/login" replace />;
+  if (!initialized) {
+    return <div>Loading...</div>; // Or your preferred loading component
+  }
+
+  return user != null ? (
+    <div className="w-screen h-screen relative">
+      <SidebarProvider>
+        <AppSidebar />
+        <main>
+          <SidebarTrigger />
+          <Outlet />
+        </main>
+      </SidebarProvider>
+    </div>
+  ) : (
+    <Navigate to="/login" replace />
+  );
 }

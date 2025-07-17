@@ -33,8 +33,7 @@ export default function GoogleLoginButton() {
         });
         localStorage.setItem("google_token", response.credential);
 
-        console.log("User Profile:", userProfile);
-        navigate("/");
+        navigate("/roadmap");
       }
     } catch (error) {
       console.error("Authentication failed", error);
