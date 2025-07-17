@@ -1,4 +1,5 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Route, CircuitBoard, Star } from "lucide-react";
+import roadmappers_logo from "@/assets/roadMappersLogo.svg";
 
 import {
   Sidebar,
@@ -10,33 +11,24 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import React from "react";
 
 // Menu items.
 const items = [
   {
-    title: "Home",
+    title: "My Roadmaps",
     url: "#",
-    icon: Home,
+    icon: Route,
   },
   {
-    title: "Inbox",
+    title: "My Templates",
     url: "#",
-    icon: Inbox,
+    icon: CircuitBoard,
   },
   {
-    title: "Calendar",
+    title: "Explore",
     url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
+    icon: Star,
   },
 ];
 
@@ -45,18 +37,25 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel className="mt-10 text-center flex items-center justify-center text-xl font-bold">
+            <img src={roadmappers_logo} alt="Road Mappers" />
+          </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+            <SidebarMenu className="mt-14">
+              {items.map((item, idx) => (
+                <React.Fragment key={item.title}>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <a href={item.url}>
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </a>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  {idx < items.length - 1 && (
+                    <hr className="my-2 border-gray-200" />
+                  )}
+                </React.Fragment>
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
