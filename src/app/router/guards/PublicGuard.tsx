@@ -4,8 +4,8 @@ interface Props {
 
 export default function PublicGuard({ children }: Props): React.ReactNode {
   return (
-    <div>
-      <div className="font-extrabold">Public Route</div>
+    <div className="w-screen h-screen  overflow-hidden">
+      <div className=" font-extrabold">Public Route</div>
       {children}
     </div>
   );
