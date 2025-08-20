@@ -4,7 +4,7 @@ import PublicGuard from "./guards/PublicGuard";
 import ErrorPage from "../pages/ErrorPage";
 import SignIn from "../pages/SignIn";
 import HomePage from "../pages/Home";
-import RoadmapPage from "../pages/RoadmapPage";
+import RoadmapPage from "../pages/roadmap-page/RoadmapPage";
 
 const router = createBrowserRouter([
   {
